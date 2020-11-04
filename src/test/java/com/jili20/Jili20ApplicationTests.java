@@ -1,8 +1,10 @@
 package com.jili20;
 
 import com.jili20.dao.DiscussPostMapper;
+import com.jili20.dao.LoginTicketMapper;
 import com.jili20.dao.UserMapper;
 import com.jili20.entity.DiscussPost;
+import com.jili20.entity.LoginTicket;
 import com.jili20.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ class Jili20ApplicationTests {
     @Autowired
     private DiscussPostMapper discussPostMapper;
 
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
     @Test
     public void testSelectUser() {
         User user = userMapper.selectById(101);
@@ -33,44 +38,71 @@ class Jili20ApplicationTests {
 
     }
 
-     @Test
-      public void testInsertUser(){
-         User user = new User();
-         user.setUsername("test");
-         user.setSalt("abc");
-         user.setEmail("test@qq.com");
-         user.setHeaderUrl("http://www.nowcoder.com/101.png");
-         user.setCreateTime(new Date());
+    @Test
+    public void testInsertUser() {
+        User user = new User();
+        user.setUsername("test");
+        user.setSalt("abc");
+        user.setEmail("test@qq.com");
+        user.setHeaderUrl("http://www.nowcoder.com/101.png");
+        user.setCreateTime(new Date());
 
-         int rows = userMapper.insertUser(user);
-         System.out.println(rows);
-         System.out.println(user.getId());
+        int rows = userMapper.insertUser(user);
+        System.out.println(rows);
+        System.out.println(user.getId());
+
+    }
+
+
+    @Test
+    public void updateUser() {
+        int rows = userMapper.updateStatus(150, 1);
+        System.out.println(rows);
+
+        rows = userMapper.updateHeader(150, "http://www.nowcoder.com/102.png");
+        System.out.println(rows);
+
+        rows = userMapper.updatePassword(150, "hello");
+        System.out.println(rows);
+    }
+
+
+    @Test
+    public void testSelectPost() {
+        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
+        for (DiscussPost post : list) {
+            System.out.println(post);
+        }
+
+        int rows = discussPostMapper.selectDiscussPostRows(149);
+        System.out.println(rows);
+
+    }
+
+
+    // 测试添加凭证
+    @Test
+    public void testInsertLoginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    // 测试查询凭证
+     @Test
+      public void testSelectLoginTicket(){
+         LoginTicket loginTicket = loginTicketMapper.selectByTicker("abc");
+         System.out.println(loginTicket);
+
+         // 更新凭证
+         loginTicketMapper.updateStatus("abc",1);
+         loginTicket = loginTicketMapper.selectByTicker("abc");
+         System.out.println(loginTicket);
 
      }
 
-
-      @Test
-       public void updateUser(){
-          int rows = userMapper.updateStatus(150, 1);
-          System.out.println(rows);
-
-          rows = userMapper.updateHeader(150, "http://www.nowcoder.com/102.png");
-          System.out.println(rows);
-
-          rows = userMapper.updatePassword(150, "hello");
-          System.out.println(rows);
-      }
-
-
-         @Test
-          public void testSelectPost(){
-             List<DiscussPost> list = discussPostMapper.selectDiscussPosts(0, 0, 10);
-             for (DiscussPost post : list) {
-                 System.out.println(post);
-             }
-
-             int rows = discussPostMapper.selectDiscussPostRows(149);
-             System.out.println(rows);
-
-         }
 }
