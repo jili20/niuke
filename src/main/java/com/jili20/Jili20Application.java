@@ -1,0 +1,13 @@
+package com.jili20;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Jili20Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Jili20Application.class, args);
+    }
+
+}
