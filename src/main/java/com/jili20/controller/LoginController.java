@@ -102,7 +102,7 @@ public class LoginController implements CommunityConstant {
 
     // 登录
     @PostMapping("/login")
-    private String login(String username, String password, String code, boolean rememberme, Model model,
+    private String login(String username, String password, String code, boolean remember, Model model,
                          HttpSession session, HttpServletResponse response) {
         // 检查验证码
         String kaptcha = (String) session.getAttribute("kaptcha"); // 验证码 返回是对象，强转字符串
@@ -113,7 +113,7 @@ public class LoginController implements CommunityConstant {
         }
         // 检查账号，密码
         // 是否勾选记住我
-        int expiredSeconds = rememberme?REMEMBER_EXPIRED_SECONDS:DEFAULT_EXPIRED_SECONDS;
+        int expiredSeconds = remember?REMEMBER_EXPIRED_SECONDS:DEFAULT_EXPIRED_SECONDS;
         Map<String, Object> map = userService.login(username, password, expiredSeconds);
         // containsKey 包含了
         if (map.containsKey("ticket")) {
@@ -129,7 +129,6 @@ public class LoginController implements CommunityConstant {
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             return "/site/login";
         }
-
     }
 
     // 退出
