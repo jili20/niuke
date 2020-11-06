@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
-/**
+/** 验证码生成器
  * @author bing  @create 2020/11/4-7:27 下午
  */
 @Configuration

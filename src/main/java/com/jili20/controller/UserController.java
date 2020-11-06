@@ -1,5 +1,6 @@
 package com.jili20.controller;
 
+import com.jili20.annotation.LoginRequired;
 import com.jili20.entity.User;
 import com.jili20.service.UserService;
 import com.jili20.util.CommunityUtil;
@@ -13,15 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 
 /**
  * @author bing  @create 2020/11/5-3:29 下午
@@ -47,14 +46,16 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired // 自定义的拦截器注解，必须登录才能访问此方法
     @GetMapping("/setting")
     private String getSettingPage() {
         return "/site/setting";
     }
 
     // 上传头像
+    @LoginRequired // 自定义的拦截器注解，必须登录才能访问此方法
     @PostMapping("/upload")
-    public String uploadHeader(MultipartFile headerImage, Model model) {
+    public String uploadHeader(MultipartFile headerImage, Model model, RedirectAttributes attr) {
         // 如果上传的文件为空
         if (headerImage == null) {
             model.addAttribute("error", "你还没有选择图片！");
@@ -83,13 +84,19 @@ public class UserController {
         // http://localhost:8080/community/user/header/xxx.png
         User user = hostHolder.getUser();
         String headerUrl = domain + contextPath + "/user/header/" + fileName;
-        userService.updateHeader(user.getId(), headerUrl);
-        return "redirect:/";
+
+        // 使用下面的方法，给模板传提示信息
+        int rows = userService.updateHeader(user.getId(), headerUrl);
+        if (rows > 0) {
+            // 重定向消息提示
+            attr.addFlashAttribute("uploadHeaderSuccess", "上传头像成功");
+        }
+         return "redirect:/";
     }
 
     // 获取头像
     // 向网页响应的是一个二进制数据，通过流手动向浏览器输出
-    @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
+    @GetMapping("/header/{fileName}")
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
         // 服务器存放路径
         fileName = uploadPath + "/" + fileName;
@@ -110,31 +117,49 @@ public class UserController {
             logger.error("读取头像失败: " + e.getMessage());
         }
     }
-//    @GetMapping("/header/{fileName}")
-//    public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
-//        // 服务器存放路径
-//        fileName = uploadPath + "/" + fileName;
-//        // 截取文件后缀
-//        String suffix = fileName.substring(fileName.lastIndexOf("."));
-//        // 响应图片
-//        response.setContentType("image/" + suffix);
-//        try (  // 括号内的流会自动关闭
-//               // 获取字节流
-//               ServletOutputStream os = response.getOutputStream();
-//               // 读取文件，得到一个输入流
-//               FileInputStream fis = new FileInputStream(fileName);
-//        ) {
-//            // 声明一个缓冲区
-//            byte[] buffer = new byte[1024];
-//            int b = 0; // 油标？
-//            while ((b = fis.read(buffer)) != -1) {
-//                os.write(buffer, 0, b);
-//            }
-//        } catch (IOException e) {
-//            logger.error("读取头像失败：" + e.getMessage());
-//        }
-//
-//    }
 
 
+    // 修改密码
+    @PostMapping("/updatePassword")
+    public String updatePassword(Model model,String oldPassword,String newPassword,String confirmPassword){
+        User user = hostHolder.getUser();
+
+        if (StringUtils.isBlank(oldPassword) ) {
+            model.addAttribute("oldPasswordMsg", "原密码不能为空！");
+            return "site/setting";
+        }
+
+        if (StringUtils.isBlank(newPassword) ) {
+            model.addAttribute("newPasswordMsg", "新密码不能为空！");
+            return "site/setting";
+        }
+
+        if (StringUtils.isBlank(confirmPassword) ) {
+            model.addAttribute("confirmPasswordMsg", "确认密码不能为空！");
+            return "site/setting";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("newPasswordMsg","新密码和确认密码不一致！");
+            return "site/setting";
+        }
+
+        // 处理密码加密
+        String u = user.getPassword() ;
+        oldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
+        newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        if (!oldPassword.equals(u)){
+            model.addAttribute("oldPasswordMsg","原密码错误！！");
+            return "site/setting";
+        }
+        if (oldPassword.equals(u)){
+            user.setPassword(newPassword);
+//            userService.updatePassword(user.getId(),user.getPassword());
+            int rows = userService.updatePassword(user.getId(),user.getPassword());
+            if (rows > 0) {
+                model.addAttribute("updatePasswordMsg","密码更新成功！");
+            }
+        }
+        return "site/setting";
+    }
 }
