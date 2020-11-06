@@ -80,6 +80,27 @@
                     </button>
                 </p>
             </div>
+            <!--修改用户名提示消息-->
+            <div class="flash-message  alert-success" id="flash-message"
+                 th:if="${updateUsernameMsg!=null}">
+                <p class="alert ">
+                    　[[${updateUsernameMsg}]]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </p>
+            </div>
+
+            <!--修改邮箱提示消息-->
+            <div class="flash-message  alert-success" id="flash-message"
+                 th:if="${updateEmailMsg!=null}">
+                <p class="alert ">
+                    　[[${updateEmailMsg}]]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </p>
+            </div>
 
             <!--页面取出提示消息-->
             <div class="flash-message  alert-success" id="flash-message" th:if="${loginSuccess!=null}">

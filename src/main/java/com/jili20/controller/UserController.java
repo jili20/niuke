@@ -91,7 +91,8 @@ public class UserController {
             // 重定向消息提示
             attr.addFlashAttribute("uploadHeaderSuccess", "上传头像成功");
         }
-         return "redirect:/";
+//        return "site/setting";
+        return "redirect:/";
     }
 
     // 获取头像
@@ -121,45 +122,99 @@ public class UserController {
 
     // 修改密码
     @PostMapping("/updatePassword")
-    public String updatePassword(Model model,String oldPassword,String newPassword,String confirmPassword){
+    public String updatePassword(Model model, String oldPassword, String newPassword, String confirmPassword, RedirectAttributes attr) {
         User user = hostHolder.getUser();
 
-        if (StringUtils.isBlank(oldPassword) ) {
+        if (StringUtils.isBlank(oldPassword)) {
             model.addAttribute("oldPasswordMsg", "原密码不能为空！");
             return "site/setting";
         }
 
-        if (StringUtils.isBlank(newPassword) ) {
+        if (StringUtils.isBlank(newPassword)) {
             model.addAttribute("newPasswordMsg", "新密码不能为空！");
             return "site/setting";
         }
 
-        if (StringUtils.isBlank(confirmPassword) ) {
+        if (StringUtils.isBlank(confirmPassword)) {
             model.addAttribute("confirmPasswordMsg", "确认密码不能为空！");
             return "site/setting";
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("newPasswordMsg","新密码和确认密码不一致！");
+            model.addAttribute("newPasswordMsg", "新密码和确认密码不一致！");
             return "site/setting";
         }
 
         // 处理密码加密
-        String u = user.getPassword() ;
+        String u = user.getPassword();
         oldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
         newPassword = CommunityUtil.md5(newPassword + user.getSalt());
-        if (!oldPassword.equals(u)){
-            model.addAttribute("oldPasswordMsg","原密码错误！！");
+        if (!oldPassword.equals(u)) {
+            model.addAttribute("oldPasswordMsg", "原密码错误！！");
             return "site/setting";
         }
-        if (oldPassword.equals(u)){
+        if (oldPassword.equals(u)) {
             user.setPassword(newPassword);
-//            userService.updatePassword(user.getId(),user.getPassword());
-            int rows = userService.updatePassword(user.getId(),user.getPassword());
+            int rows = userService.updatePassword(user.getId(), user.getPassword());
             if (rows > 0) {
-                model.addAttribute("updatePasswordMsg","密码更新成功！");
+                attr.addFlashAttribute("updatePasswordMsg", "密码更新成功！");
             }
         }
-        return "site/setting";
+        // return "site/setting";
+        return "redirect:/";
+    }
+
+
+    // 修改用户名
+    @PostMapping("/updateUsername")
+    public String updateUsername(Model model, String username,RedirectAttributes attr) {
+        User user = hostHolder.getUser();
+
+        if (StringUtils.isBlank(username)) {
+            model.addAttribute("updateUsernameMsg", "新用户名不能为空！");
+            return "site/setting";
+        }
+
+        String u = user.getUsername();
+
+        if (username.equals(u)) {
+            model.addAttribute("updateUsernameMsg", "新用户名不能与原用户相同！");
+            return "site/setting";
+        }
+
+        int rows = userService.updateUsername(user.getId(), username);
+        if (rows > 0) {
+            attr.addFlashAttribute("updateUsernameMsg", "修改用户名成功");
+        }
+
+        // return "site/setting";
+        return "redirect:/";
+    }
+
+    // 修改邮箱
+    @PostMapping("/updateEmail")
+    public String updateEmail(Model model, String email,RedirectAttributes attr) {
+        User user = hostHolder.getUser();
+
+        if (StringUtils.isBlank(email)) {
+            model.addAttribute("updateEmailMsg", "新邮箱不能为空！");
+            return "site/setting";
+        }
+
+        String u = user.getEmail();
+
+        if (email.equals(u)) {
+            model.addAttribute("updateEmailMsg", "新邮箱不能与原邮箱相同！");
+            return "site/setting";
+        }
+
+        int rows = userService.updateEmail(user.getId(), email);
+        if (rows > 0) {
+            attr.addFlashAttribute("updateEmailMsg", "修改邮箱成功");
+        }
+
+        // return "site/setting";
+        return "redirect:/";
+
     }
 }
