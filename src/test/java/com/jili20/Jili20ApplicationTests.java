@@ -105,4 +105,11 @@ class Jili20ApplicationTests {
 
      }
 
+
+
+      @Test
+       public void test(){
+          System.out.println(System.currentTimeMillis());
+
+       }
 }

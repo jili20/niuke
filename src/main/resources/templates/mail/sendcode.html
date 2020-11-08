@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
+    <title>牛客网-激活账号</title>
+</head>
+<body>
+	<div>
+		<p><b th:text="${email}"></b>，您好！</p>
+		<p>
+			您正在尝试找回密码，系统已随机为你重置了登录密码 <b style="color: red" th:text="${password}">
+		</b> ,为安全起见，请尽快以此密码登录账户，登录之后请马上修改密码。
+			<br/>
+			<br/>
+			-- jili20.com
+		</p>
+	</div>
+</body>
+</html>

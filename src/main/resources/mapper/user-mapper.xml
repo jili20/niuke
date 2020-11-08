@@ -13,19 +13,22 @@
         id, username, password, salt, email, type, status, activation_code, header_url, create_time
     </sql>
     <select id="selectById" resultType="com.jili20.entity.User">
-        select <include refid="selectFields"></include>
+        select
+        <include refid="selectFields"></include>
         from user
         where id = #{id}
     </select>
 
     <select id="selectByName" resultType="com.jili20.entity.User">
-        select <include refid="selectFields"></include>
+        select
+        <include refid="selectFields"></include>
         from user
         where username = #{username}
     </select>
 
     <select id="selectByEmail" resultType="com.jili20.entity.User">
-        select <include refid="selectFields"></include>
+        select
+        <include refid="selectFields"></include>
         from user
         where email = #{email}
     </select>
@@ -33,7 +36,8 @@
 
     <insert id="insertUser" parameterType="User" keyProperty="id">
         insert into user (<include refid="insertFields"></include>)
-        values(#{username}, #{password}, #{salt}, #{email}, #{type}, #{status}, #{activationCode}, #{headerUrl}, #{createTime})
+        values(#{username}, #{password}, #{salt}, #{email}, #{type}, #{status}, #{activationCode}, #{headerUrl},
+        #{createTime})
     </insert>
 
     <update id="updateStatus">
@@ -41,20 +45,20 @@
     </update>
 
     <update id="updateHeader">
-        update user set header_url = #{headerUrl} where id = #{id}
-    </update>
+    update user set header_url = #{headerUrl} where id = #{id}
+</update>
 
     <update id="updatePassword">
-        update user set password = #{password} where id = #{id}
-    </update>
+    update user set password = #{password} where id = #{id}
+</update>
 
     <update id="updateUsername">
-        update user set username = #{username} where id = #{id}
-    </update>
+    update user set username = #{username} where id = #{id}
+</update>
 
     <update id="updateEmail">
-        update user set email = #{email} where id = #{id}
-    </update>
+    update user set email = #{email} where id = #{id}
+</update>
 
 
 </mapper>

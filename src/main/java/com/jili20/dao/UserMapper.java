@@ -19,5 +19,4 @@ public interface UserMapper {
     int updateUsername(int id,String username);
     int updateEmail(int id,String email);
 
-
 }

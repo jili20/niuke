@@ -91,7 +91,7 @@ public class UserController {
             // 重定向消息提示
             attr.addFlashAttribute("uploadHeaderSuccess", "上传头像成功");
         }
-//        return "site/setting";
+        // return "site/setting";
         return "redirect:/";
     }
 

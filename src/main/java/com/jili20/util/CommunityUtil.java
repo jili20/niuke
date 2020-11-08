@@ -20,6 +20,7 @@ public class CommunityUtil {
           if (StringUtils.isBlank(key)) {
               return null;
           }
+          // 把加密的结果加密成16进制的字符串返回
           return DigestUtils.md5DigestAsHex(key.getBytes());
       }
 }

@@ -66,51 +66,21 @@
         </div>
     </header>
 
-    <!-- 内容 -->
-    <div class="main ">
-        <div class="container">
+<!-- 内容 -->
+<div class="main ">
+    <div class="container">
 
-            <!--上传头像提示消息-->
-            <div class="flash-message  alert-success" id="flash-message"
-                 th:if="${uploadHeaderSuccess!=null}">
-                <p class="alert ">
-                    　[[${uploadHeaderSuccess}]]
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </p>
-            </div>
-            <!--修改用户名提示消息-->
-            <div class="flash-message  alert-success" id="flash-message"
-                 th:if="${updateUsernameMsg!=null}">
-                <p class="alert ">
-                    　[[${updateUsernameMsg}]]
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </p>
-            </div>
-
-            <!--修改邮箱提示消息-->
-            <div class="flash-message  alert-success" id="flash-message"
-                 th:if="${updateEmailMsg!=null}">
-                <p class="alert ">
-                    　[[${updateEmailMsg}]]
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </p>
-            </div>
-
-            <!--页面取出提示消息-->
-            <div class="flash-message  alert-success" id="flash-message" th:if="${loginSuccess!=null}">
-                <p class="alert ">
-                    　[[${loginSuccess}]]
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </p>
-            </div>
+        <!-- 上传头像、修改用户名、密码、邮箱 成功提示信息       -->
+        <div class="flash-message  alert-success" id="flash-message"
+             th:if="(${welcome!=null}) or (${loginSuccess!=null}) or (${uploadHeaderSuccess!=null}) or (${updateUsernameMsg!=null})
+             or (${updateEmailMsg!=null}) or(${updateEmailMsg!=null}) or(${updatePasswordMsg!=null})">
+            <p class="alert ">
+                [[${welcome}]] [[${loginSuccess}]]　[[${uploadHeaderSuccess}]]  [[${updateUsernameMsg}]]   [[${updateEmailMsg}]]  [[${updatePasswordMsg}]]
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </p>
+        </div>
 
             <div class="position-relative">
                 <!-- 筛选条件 -->

@@ -49,7 +49,7 @@ public class UserService implements CommunityConstant {
     }
 
     // 注册
-    public Map<String, Object> register(User user) {
+    public Map<String, Object> register(User user) { // 此 user 是页面传进来的
         Map<String, Object> map = new HashMap<>();
 
         // 空判断
@@ -93,11 +93,11 @@ public class UserService implements CommunityConstant {
         user.setActivationCode(CommunityUtil.generateUUID()); // 激活码
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
         user.setCreateTime(new Date());
-        userMapper.insertUser(user);
+        userMapper.insertUser(user); // 配置文件中配置了自动生成id的机制
 
         // 激活邮件
         Context context = new Context();
-        context.setVariable("email", user.getEmail());
+        context.setVariable("email", user.getEmail()); // 发送给那个用户
         // http://localhost:8080/community/activation/101/code
         String url = domain + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
@@ -189,6 +189,41 @@ public class UserService implements CommunityConstant {
     // 修改邮箱
     public int updateEmail(int id, String email) {
         return userMapper.updateEmail(id, email);
+    }
+
+
+    // 验证用户输入的找回密码的邮箱 SendPassword
+    public Map<String, Object> SendPassword(String email) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (StringUtils.isBlank(email)) {
+            map.put("emailMsg", "邮箱不能为空!");
+            return map;
+        }
+
+        // 验证邮箱是否存在
+        User user = userMapper.selectByEmail(email);
+        if (user == null) {
+            map.put("emailMsg", "该邮箱不存在！");
+            return map;
+        }
+
+        String temporary = CommunityUtil.generateUUID().substring(0, 8) ;
+        String password =(CommunityUtil.md5(temporary + user.getSalt()));
+        userMapper.updatePassword(user.getId(),password);
+
+        // 发送邮件
+        Context context = new Context();
+        context.setVariable("email", email); // 发送给那个用户
+        context.setVariable("password", temporary); // 发送给那个用户
+        String url = domain + contextPath + "/activation/" + user.getId() + "/" + user.getActivationCode();
+        context.setVariable("url", url);
+
+        String content = templateEngine.process("/mail/sendcode", context); // 用户邮箱收到的信息模板
+        mailClient.sendMail(email, "找回密码", content);
+
+
+        return map;
     }
 
 }

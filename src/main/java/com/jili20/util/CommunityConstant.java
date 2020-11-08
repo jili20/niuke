@@ -14,7 +14,7 @@ public interface CommunityConstant {
     int ACCTIVATION_FAILURE = 2;
 
     // 默认状态的登录凭证的超时时间
-    int DEFAULT_EXPIRED_SECONDS = 3600 * 12;// 12个小时
+    int DEFAULT_EXPIRED_SECONDS = 3600 * 12;// 1小时3600秒，12个小时
 
     // 记住我状态的登录凭证的超时时间
     int REMEMBER_EXPIRED_SECONDS = 3600 * 24 * 100; // 100 天
