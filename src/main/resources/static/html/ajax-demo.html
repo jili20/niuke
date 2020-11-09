@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX</title>
+    <script src=/js/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+<p>
+    <input type="button" value="发送" onclick="send();">
+
+</p>
+
+<!--<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>-->
+<script>
+
+    function send() {
+        // alert("okok");
+        console.log("ok");
+
+        $.post(
+            "/ajax",
+            {"name": "张三", "age": 23},
+            function (data) {
+                console.log(typeof (data));
+                console.log(data);
+
+                data = $.parseJSON(data);
+                console.log(typeof (data));
+                console.log(data.code);
+                console.log(data.msg);
+            }
+        );
+    }
+
+    // http://localhost/html/ajax-demo.html
+</script>
+</body>
+</html>

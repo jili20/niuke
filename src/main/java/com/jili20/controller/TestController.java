@@ -2,10 +2,7 @@ package com.jili20.controller;
 
 import com.jili20.util.CommunityUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -14,9 +11,17 @@ import javax.servlet.http.HttpSession;
 /**
  * @author bing  @create 2020/11/4-5:32 下午
  */
-@RequestMapping("/test")
 @Controller
 public class TestController {
+
+    // ajax示例
+    @PostMapping("/ajax")
+    @ResponseBody
+    public String testAjax(String name, int age) {
+        System.out.println(name);
+        System.out.println(age);
+        return CommunityUtil.getJSONString(0, "操作成功!");
+    }
 
     // 存cookid
     // http://jili20.com/test/cookie/set
@@ -40,16 +45,14 @@ public class TestController {
     }
 
 
-
     // session 安全，但服务器有压力
-
     // 设置session示例
     // http://jili20.com/test/session/set
     @GetMapping("/session/set")
     @ResponseBody
     public String setSession(HttpSession session) {
-        session.setAttribute("id",1);
-        session.setAttribute("name","Test");
+        session.setAttribute("id", 1);
+        session.setAttribute("name", "Test");
         return "set session";
     }
 
@@ -63,5 +66,6 @@ public class TestController {
         System.out.println(session.getAttribute("name"));
         return "get session";
     }
+
 
 }

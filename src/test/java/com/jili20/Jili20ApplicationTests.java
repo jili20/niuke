@@ -6,6 +6,7 @@ import com.jili20.dao.UserMapper;
 import com.jili20.entity.DiscussPost;
 import com.jili20.entity.LoginTicket;
 import com.jili20.entity.User;
+import com.jili20.util.SensitiveFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,9 @@ class Jili20ApplicationTests {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter; // 过滤敏感词
 
     @Test
     public void testSelectUser() {
@@ -88,28 +92,37 @@ class Jili20ApplicationTests {
         loginTicket.setTicket("abc");
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
-
         loginTicketMapper.insertLoginTicket(loginTicket);
     }
 
     // 测试查询凭证
-     @Test
-      public void testSelectLoginTicket(){
-         LoginTicket loginTicket = loginTicketMapper.selectByTicker("abc");
-         System.out.println(loginTicket);
+    @Test
+    public void testSelectLoginTicket() {
+        LoginTicket loginTicket = loginTicketMapper.selectByTicker("abc");
+        System.out.println(loginTicket);
 
-         // 更新凭证
-         loginTicketMapper.updateStatus("abc",1);
-         loginTicket = loginTicketMapper.selectByTicker("abc");
-         System.out.println(loginTicket);
+        // 更新凭证
+        loginTicketMapper.updateStatus("abc", 1);
+        loginTicket = loginTicketMapper.selectByTicker("abc");
+        System.out.println(loginTicket);
+    }
 
-     }
+    @Test
+    public void test() {
+        System.out.println(System.currentTimeMillis()); // 打印当前时间戳
+    }
+
+    // 测试过滤敏感词
+    @Test
+    public void testSensitiveFilter() {
+        String text = "这里可以赌博，可以嫖娼，可以吸毒，可以开票,哈哈哈";
+        text = sensitiveFilter.filter(text);
+        System.out.println(text);
+
+        String text2 = "这里可以赌🟢博，可以嫖👍娼，可以吸🌺毒，可以开👉👉票,哈哈哈";
+        text2 = sensitiveFilter.filter(text);
+        System.out.println(text2);
+    }
 
 
-
-      @Test
-       public void test(){
-          System.out.println(System.currentTimeMillis());
-
-       }
 }

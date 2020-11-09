@@ -222,7 +222,6 @@ public class UserService implements CommunityConstant {
         String content = templateEngine.process("/mail/sendcode", context); // 用户邮箱收到的信息模板
         mailClient.sendMail(email, "找回密码", content);
 
-
         return map;
     }
 
