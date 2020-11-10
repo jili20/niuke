@@ -3,7 +3,7 @@ $(function () {
 });
 
 
-
+// 发布帖子
 function publish() {
     $("#publishModal").modal("hide");
     // 通过id获取到标题文本框的值
@@ -30,4 +30,8 @@ function publish() {
     )
     ;
 }
+
+
+
+
 

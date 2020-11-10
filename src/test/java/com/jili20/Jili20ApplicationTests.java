@@ -2,9 +2,11 @@ package com.jili20;
 
 import com.jili20.dao.DiscussPostMapper;
 import com.jili20.dao.LoginTicketMapper;
+import com.jili20.dao.MessageMapper;
 import com.jili20.dao.UserMapper;
 import com.jili20.entity.DiscussPost;
 import com.jili20.entity.LoginTicket;
+import com.jili20.entity.Message;
 import com.jili20.entity.User;
 import com.jili20.util.SensitiveFilter;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,9 @@ class Jili20ApplicationTests {
 
     @Autowired
     private SensitiveFilter sensitiveFilter; // 过滤敏感词
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelectUser() {
@@ -124,5 +129,33 @@ class Jili20ApplicationTests {
         System.out.println(text2);
     }
 
+    // 测试私信各功能
+    @Test
+    public void testSelectLetters() {
+        // 当前用户 会话列表
+        List<Message> list = messageMapper.selectConversations(111, 0, 20);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+
+        // 当前用户 与 111 会话数量
+        int count = messageMapper.selectConversationCount(111);
+        System.out.println(count);
+
+        // 111_112 会话列表
+        list = messageMapper.selectLetters("111_112", 0, 10);
+        for (Message message : list) {
+            System.out.println(message);
+        }
+
+        // 111_112 的会话数量
+        count = messageMapper.selectLetterCount("111_112");
+        System.out.println(count);
+
+        // 111_131 会话的未读私信数量
+        count = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(count);
+
+    }
 
 }

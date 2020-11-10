@@ -120,6 +120,23 @@
                 那么算法要怎么复习？重点在哪里？常见笔试面试算法题型和解题思路以及最优代码是怎样的？
                 跟左程云老师学算法，不仅能解决以上所有问题，还能在短时间内得到最大程度的提升！！！
             </div>
+            <br>
+            <br>
+            <button type="submit" class="btn btn-outline-secondary btn-sm float-left m-1">关注</button>
+            <button type="submit" class="btn btn-outline-secondary btn-sm float-left m-1">举报</button>
+            <button type="submit" class="btn btn-outline-secondary btn-sm float-right m-1">删除</button>
+
+
+
+            <form method="post" th:action="@{|/comment/add/${post.id}|}">
+                <input type="hidden" name="entityType" value="1">
+                <input type="hidden" name="entityId" th:value="${post.id}">
+                <button type="submit" class="btn btn-outline-secondary btn-sm float-right m-1">编辑</button>
+            </form>
+
+
+            <br>
+            <br>
         </div>
         <!-- 回帖 -->
         <div class="container mt-3">
