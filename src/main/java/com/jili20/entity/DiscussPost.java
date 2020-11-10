@@ -11,13 +11,13 @@ import java.util.Date;
 @Data
 @ToString
 public class DiscussPost {
-    private Integer id;
-    private Integer userId;
+    private int id;
+    private int userId;
     private String title;
     private String content;
-    private Integer type;
-    private Integer  status;
+    private int type;  // 一定要用 int 类型，默认值为 0，不会空指针异常
+    private int  status;
     private Date createTime;
-    private Integer commentCount;
+    private int commentCount;
     private double score;
 }
