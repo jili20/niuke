@@ -22,7 +22,7 @@ public class MessageService {
     }
 
     // 与 111 会话数量
-    public int findConversationCout(int userId){
+    public int findConversationCount(int userId){
         return messageMapper.selectConversationCount(userId);
     }
 

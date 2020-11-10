@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class MessageController {
         // 设置分页信息
         page.setLimit(5);//每页显示5条
         page.setPath("/letter/list"); // 当前路径
-        page.setRows(messageService.findConversationCout(user.getId())); // 当前用户会话总数
+        page.setRows(messageService.findConversationCount(user.getId())); // 当前用户会话总数
 
         // 所有会话列表
         List<Message> conversationList = messageService.findConversations(
@@ -65,9 +66,45 @@ public class MessageController {
         model.addAttribute("conversations", conversations); // 分组会话 页面遍历这个
         // 查询未读消息总数量
         int letterUnreadCount = messageService.findLetterUnreadCount(user.getId(), null);
-        model.addAttribute("letterUnreadCount",letterUnreadCount);
+        model.addAttribute("letterUnreadCount", letterUnreadCount);
         return "/site/letter";
     }
+
+    // 私信详情列表
+    @GetMapping("/letter/detail/{conversationId}")
+    public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
+        // 设置分页信息
+        page.setLimit(5);
+        page.setPath("/letter/detail/" + conversationId);
+        page.setRows(messageService.findLetterCount(conversationId));
+        // 私信列表
+        List<Message> letterList = messageService.findLdtters(conversationId, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> letters = new ArrayList<>();
+        if (letterList !=null ) {
+            for (Message message : letterList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("letter",message);
+                map.put("fromUser",userService.findUserById(message.getFromId()));
+                letters.add(map);
+            }
+        }
+        model.addAttribute("letters",letters);
+        model.addAttribute("target",getLetterTarget(conversationId));
+        return "/site/letter-detail";
+    }
+
+    // 查出与当前用户对话的用户（上面私信详情列表用）
+    private User getLetterTarget(String conversationId){
+        String[] ids = conversationId.split("_");
+        int id0 = Integer.parseInt(ids[0]);
+        int id1 = Integer.parseInt(ids[1]);
+        if (hostHolder.getUser().getId() == id0) {
+            return userService.findUserById(id1);
+        }else {
+            return userService.findUserById(id0);
+        }
+    }
+
 }
 
 
