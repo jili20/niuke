@@ -72,10 +72,9 @@
 
         <!-- 上传头像、修改用户名、密码、邮箱 成功提示信息       -->
         <div class="flash-message  alert-success" id="flash-message"
-             th:if="(${welcome!=null}) or (${loginSuccess!=null}) or (${uploadHeaderSuccess!=null}) or (${updateUsernameMsg!=null})
-             or (${updateEmailMsg!=null}) or(${updateEmailMsg!=null}) or(${updatePasswordMsg!=null})">
+             th:if="(${welcome!=null}) or (${loginSuccess!=null}) ">
             <p class="alert">
-                [[${welcome}]] [[${loginSuccess}]]　[[${uploadHeaderSuccess}]]  [[${updateUsernameMsg}]]   [[${updateEmailMsg}]]  [[${updatePasswordMsg}]]
+                [[${welcome}]] [[${loginSuccess}]]
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

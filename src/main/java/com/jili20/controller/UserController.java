@@ -91,8 +91,7 @@ public class UserController {
             // 重定向消息提示
             attr.addFlashAttribute("uploadHeaderSuccess", "上传头像成功");
         }
-        // return "site/setting";
-        return "redirect:/";
+        return "redirect:/user/setting";
     }
 
     // 获取头像
@@ -157,11 +156,10 @@ public class UserController {
             user.setPassword(newPassword);
             int rows = userService.updatePassword(user.getId(), user.getPassword());
             if (rows > 0) {
-                attr.addFlashAttribute("updatePasswordMsg", "密码更新成功！");
+                attr.addFlashAttribute("passwordMsg", "密码更新成功！");
             }
         }
-        // return "site/setting";
-        return "redirect:/";
+        return "redirect:/user/setting";
     }
 
 
@@ -184,11 +182,9 @@ public class UserController {
 
         int rows = userService.updateUsername(user.getId(), username);
         if (rows > 0) {
-            attr.addFlashAttribute("updateUsernameMsg", "修改用户名成功");
+            attr.addFlashAttribute("usernameMsg", "修改用户名成功");
         }
-
-        // return "site/setting";
-        return "redirect:/";
+        return "redirect:/user/setting";
     }
 
     // 修改邮箱
@@ -210,11 +206,9 @@ public class UserController {
 
         int rows = userService.updateEmail(user.getId(), email);
         if (rows > 0) {
-            attr.addFlashAttribute("updateEmailMsg", "修改邮箱成功");
+            attr.addFlashAttribute("emailMsg", "修改邮箱成功");
         }
-
-        // return "site/setting";
-        return "redirect:/";
+        return "redirect:/user/setting";
 
     }
 }

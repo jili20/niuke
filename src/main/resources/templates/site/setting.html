@@ -67,6 +67,18 @@
     <!-- 内容 -->
     <div class="main">
         <div class="container p-5 mt-3 mb-3">
+
+            <!-- 上传头像、修改用户名、密码、邮箱 成功提示信息       -->
+            <div class="flash-message  alert-success" id="flash-message"
+                 th:if="(${usernameMsg!=null}) or (${uploadHeaderSuccess!=null}) or(${emailMsg!=null}) or(${passwordMsg!=null})">
+                <p class="alert">
+                    [[${usernameMsg}]] [[${uploadHeaderSuccess}]] [[${emailMsg}]]  [[${passwordMsg}]]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </p>
+            </div>
+
             <!-- 上传头像 -->
             <h6 class="text-left text-info border-bottom pb-2">上传头像</h6>
             <form class="mt-5" method="post" enctype="multipart/form-data" th:action="@{/user/upload}">
@@ -95,6 +107,7 @@
             <!-- 修改用户名 -->
             <h6 class="text-left text-info border-bottom pb-2 mt-5">修改用户名</h6>
             <form class="mt-5" method="post" th:action="@{/user/updateUsername}">
+                <input type="hidden" name="id">
 
                 <div class="form-group row mt-4">
                     <label for="username" class="col-sm-2 col-form-label text-right">新用户名:</label>
