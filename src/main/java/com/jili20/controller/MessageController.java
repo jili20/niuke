@@ -10,10 +10,7 @@ import com.jili20.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -73,46 +70,69 @@ public class MessageController {
     // 私信详情列表
     @GetMapping("/letter/detail/{conversationId}")
     public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
-        // 设置分页信息
-        page.setLimit(5);
-        page.setPath("/letter/detail/" + conversationId);
-        page.setRows(messageService.findLetterCount(conversationId));
-        // 私信列表
-        List<Message> letterList = messageService.findLdtters(conversationId, page.getOffset(), page.getLimit());
+        //分页信息
+        page.setLimit(5);//每页显示5条
+        page.setPath("/letter/detail/" + conversationId); // 当前路径
+        page.setRows(messageService.findLetterCount(conversationId));//设置行数
+        //私信列表  findLdtters
+        List<Message> letterList = messageService.findLetters(conversationId, page.getOffset(), page.getLimit());
         List<Map<String, Object>> letters = new ArrayList<>();
-        if (letterList !=null ) {
+        if (letterList != null) {
             for (Message message : letterList) {
                 Map<String, Object> map = new HashMap<>();
-                map.put("letter",message);
-                map.put("fromUser",userService.findUserById(message.getFromId()));
+                map.put("letter", message);
+                map.put("fromUser", userService.findUserById(message.getFromId()));
                 letters.add(map);
             }
         }
-        model.addAttribute("letters",letters);
-        model.addAttribute("target",getLetterTarget(conversationId));
+        model.addAttribute("letters", letters);
+        //查询私信目标，发送给模板显示
+        model.addAttribute("target", getLetterTarget(conversationId));
+
+        //设置已读
+        List<Integer> ids = getLetterIds(letterList);
+        if (!ids.isEmpty()) {
+            messageService.readMessage(ids);
+        }
         return "/site/letter-detail";
     }
 
-    // 查出与当前用户对话的用户（上面私信详情列表用）
-    private User getLetterTarget(String conversationId){
-        String[] ids = conversationId.split("_");
+    // 私信目标
+    private User getLetterTarget(String conversationId) {
+        String[] ids = conversationId.split("_");//拆分成两个id
         int id0 = Integer.parseInt(ids[0]);
         int id1 = Integer.parseInt(ids[1]);
+
         if (hostHolder.getUser().getId() == id0) {
             return userService.findUserById(id1);
-        }else {
+        } else {
             return userService.findUserById(id0);
         }
+    }
+
+    // 获取未读消息所有id;把它传给上面的私信详情方法，将所有未读私信改为已卖状态
+    private List<Integer> getLetterIds(List<Message> letterList) {
+        List<Integer> ids = new ArrayList<>();
+
+        if (letterList != null) {
+            for (Message message : letterList) {
+                // 如果我是接受者身份，并且消息处于 未读状态
+                if (hostHolder.getUser().getId() == message.getToId() && message.getStatus() == 0) {
+                    ids.add(message.getId());
+                }
+            }
+        }
+        return ids;
     }
 
     // 发送私信
     @PostMapping("/letter/send")
     @ResponseBody // 异步
-    public String sendLetter(String toName,String content){
+    public String sendLetter(String toName, String content) {
         // 发送的目标（发给谁）
         User target = userService.findUserByName(toName);
         if (target == null) {
-            return CommunityUtil.getJSONString(1,"目标用户不存在！");
+            return CommunityUtil.getJSONString(1, "目标用户不存在！");
         }
         Message message = new Message();
         message.setFromId(hostHolder.getUser().getId()); // 发件人，当前登录用户
@@ -120,7 +140,7 @@ public class MessageController {
         // 拼会话id
         if (message.getFromId() < message.getToId()) {
             message.setConversationId(message.getFromId() + "_" + message.getToId());
-        }else {
+        } else {
             message.setConversationId(message.getToId() + "_" + message.getFromId());
         }
         message.setContent(content);

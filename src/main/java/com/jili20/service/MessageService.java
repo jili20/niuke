@@ -32,7 +32,7 @@ public class MessageService {
     }
 
     // 某会话列表
-    public List<Message> findLdtters(String conversationId,int offset, int limit){
+    public List<Message> findLetters(String conversationId,int offset, int limit){
         return messageMapper.selectLetters(conversationId,offset,limit);
     }
 
@@ -55,7 +55,8 @@ public class MessageService {
     }
 
     // 修改未读私信状态为已读
-    public int readMessage(List<Integer> ids){
-        return messageMapper.updateStatus(ids,1);
+    public int readMessage(List<Integer> ids) {
+        return messageMapper.updateStatus(ids, 1);
     }
+
 }

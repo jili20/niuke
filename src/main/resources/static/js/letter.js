@@ -13,7 +13,7 @@ function send_letter() {
 		{"toName":toName,"content":content},
 		function(data) {
 			data = $.parseJSON(data);
-			if(data.code == 0) {
+			if(data.code == 0) { // 后端传的code
 				$("#hintBody").text("发送成功!");
 			} else {
 				$("#hintBody").text(data.msg);
@@ -23,7 +23,7 @@ function send_letter() {
 			setTimeout(function(){
 				$("#hintModal").modal("hide");
 				location.reload();
-			}, 3000);
+			}, 2000);
 		}
 	);
 }
