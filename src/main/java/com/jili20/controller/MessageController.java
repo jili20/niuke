@@ -32,6 +32,7 @@ public class MessageController {
     // 私信列表
     @GetMapping("/letter/list")
     public String getLetterList(Model model, Page page) {
+//        Integer.valueOf("abc"); // 人为制造错误，测试系统异常处理
         User user = hostHolder.getUser();
 
         // 设置分页信息
@@ -110,7 +111,7 @@ public class MessageController {
         }
     }
 
-    // 获取未读消息所有id;把它传给上面的私信详情方法，将所有未读私信改为已卖状态
+    // 获取未读消息所有id（设置为已读用）
     private List<Integer> getLetterIds(List<Message> letterList) {
         List<Integer> ids = new ArrayList<>();
 
@@ -129,6 +130,7 @@ public class MessageController {
     @PostMapping("/letter/send")
     @ResponseBody // 异步
     public String sendLetter(String toName, String content) {
+//        Integer.valueOf("abc"); // 人为制造错误，测试系统异常处理
         // 发送的目标（发给谁）
         User target = userService.findUserByName(toName);
         if (target == null) {
@@ -150,7 +152,6 @@ public class MessageController {
     }
 
 
-    // 修改私信状态为已读
 }
 
 

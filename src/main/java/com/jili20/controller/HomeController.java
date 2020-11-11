@@ -48,4 +48,10 @@ public class HomeController {
         model.addAttribute("discussPosts", discussPosts); // 页面展示结果
         return "/index";
     }
+
+    // 配置异常统一返回的页面
+    @GetMapping("/error")
+    public String getErrorPage() {
+        return "/error/500";
+    }
 }
