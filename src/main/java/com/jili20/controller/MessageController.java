@@ -5,17 +5,17 @@ import com.jili20.entity.Page;
 import com.jili20.entity.User;
 import com.jili20.service.MessageService;
 import com.jili20.service.UserService;
+import com.jili20.util.CommunityUtil;
 import com.jili20.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author bing  @create 2020/11/10-8:29 下午
@@ -105,6 +105,32 @@ public class MessageController {
         }
     }
 
+    // 发送私信
+    @PostMapping("/letter/send")
+    @ResponseBody // 异步
+    public String sendLetter(String toName,String content){
+        // 发送的目标（发给谁）
+        User target = userService.findUserByName(toName);
+        if (target == null) {
+            return CommunityUtil.getJSONString(1,"目标用户不存在！");
+        }
+        Message message = new Message();
+        message.setFromId(hostHolder.getUser().getId()); // 发件人，当前登录用户
+        message.setToId(target.getId()); // 收件人
+        // 拼会话id
+        if (message.getFromId() < message.getToId()) {
+            message.setConversationId(message.getFromId() + "_" + message.getToId());
+        }else {
+            message.setConversationId(message.getToId() + "_" + message.getFromId());
+        }
+        message.setContent(content);
+        message.setCreateTime(new Date());
+        messageService.addMessage(message);
+        return CommunityUtil.getJSONString(0);
+    }
+
+
+    // 修改私信状态为已读
 }
 
 

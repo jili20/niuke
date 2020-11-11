@@ -2,8 +2,10 @@ package com.jili20.service;
 
 import com.jili20.dao.MessageMapper;
 import com.jili20.entity.Message;
+import com.jili20.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class MessageService {
 
     @Autowired
     private MessageMapper messageMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     // 所有会话列表
     public List<Message> findConversations(int userId, int offset, int limit){
@@ -41,4 +46,16 @@ public class MessageService {
         return messageMapper.selectLetterUnreadCount(userId,conversationId);
     }
 
+    // 发送私信
+    public int addMessage(Message message){
+        // 转义，过滤敏感词后插入数据库
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+        return messageMapper.insertMessage(message);
+    }
+
+    // 修改未读私信状态为已读
+    public int readMessage(List<Integer> ids){
+        return messageMapper.updateStatus(ids,1);
+    }
 }
